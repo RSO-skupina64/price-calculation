@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: price-calculation-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: price-calculation
+  template:
+    metadata:
+      labels:
+        app: price-calculation
+    spec:
+      containers:
+        - image: as9721/price-calculation:2022-11-16-20-53-18
+          name: price-calculation
+          ports:
+            - containerPort: 8080
+              name: server
+              protocol: TCP
+          env:
+            - name: spring.datasource.url
+              value: jdbc:mysql://primerjalnik-cen-server.mysql.database.azure.com:3306/primerjalnik-cen?useSSL=true
+            - name: spring.datasource.username
+              value: adminRso
+            - name: spring.datasource.password
+              value: Rso2022@
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: price-calculation
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8082
+      protocol: TCP
+      targetPort: server
+  selector:
+    app: price-calculation
