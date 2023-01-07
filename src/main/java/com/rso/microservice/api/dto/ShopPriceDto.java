@@ -2,6 +2,7 @@ package com.rso.microservice.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShopPriceDto {
@@ -17,6 +18,10 @@ public class ShopPriceDto {
 
     @JsonProperty("product_prices")
     private List<ProductPriceDto> productPrices;
+
+    public ShopPriceDto() {
+        this.productPrices = new ArrayList<>();
+    }
 
     public Long getIdShop() {
         return idShop;

@@ -1,6 +1,7 @@
 package com.rso.microservice.api;
 
 import com.rso.microservice.api.dto.*;
+import com.rso.microservice.service.PriceCalculationService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -9,6 +10,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +30,15 @@ import javax.validation.Valid;
         version = "0.1"))
 @Tag(name = "Price Calculation")
 public class PriceCalculationAPI {
+    private static final Logger log = LoggerFactory.getLogger(PriceCalculationAPI.class);
+
+    final PriceCalculationService priceCalculationService;
+
+    @Autowired
+
+    public PriceCalculationAPI(PriceCalculationService priceCalculationService) {
+        this.priceCalculationService = priceCalculationService;
+    }
 
     @PostMapping(value = "/calculate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Calculates price of products for all shops",
@@ -38,9 +51,12 @@ public class PriceCalculationAPI {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorDto.class)))
     })
-    public ResponseEntity<PriceCalculationResponseDto> calculatePrice(@Valid @RequestBody CalculatePriceRequestDto favoriteProductRequest) {
-        // todo: add code here
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    public ResponseEntity<PriceCalculationResponseDto> calculatePrice(
+            @Valid @RequestBody CalculatePriceRequestDto favoriteProductRequest) {
+        log.info("fetchProductPrices ENTRY");
+        PriceCalculationResponseDto priceCalculationResponseDto = priceCalculationService.calculatePrice(favoriteProductRequest);
+        log.info("fetchProductPrices EXIT");
+        return ResponseEntity.status(HttpStatus.OK).body(priceCalculationResponseDto);
     }
 
     @PostMapping(value = "/calculate/shop", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,7 +70,8 @@ public class PriceCalculationAPI {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorDto.class)))
     })
-    public ResponseEntity<ShopPriceDto> calculatePriceSpecificShop(@Valid @RequestBody CalculatePriceSpecificShopRequestDto favoriteProductRequest) {
+    public ResponseEntity<ShopPriceDto> calculatePriceSpecificShop(
+            @Valid @RequestBody CalculatePriceSpecificShopRequestDto favoriteProductRequest) {
         // todo: add code here
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
