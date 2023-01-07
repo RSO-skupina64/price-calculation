@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -19,4 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                                 @Param("concentration") BigDecimal concentration,
                                 @Param("concentrationUnit") ConcentrationUnitEnum concentrationUnit,
                                 @Param("productType") ProductType productType);
+
+    @Query("SELECT p FROM Product p LEFT JOIN FETCH p.productShops WHERE p.id = ?1")
+    Optional<Product> findByIdWithProductShops(Long id);
 }

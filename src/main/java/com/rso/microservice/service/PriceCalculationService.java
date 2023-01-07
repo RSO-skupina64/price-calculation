@@ -34,7 +34,7 @@ public class PriceCalculationService {
 
         // for each of the products, we need to update the price, based on the shop, price and quantity
         for (ProductCalculationDto productCalculationDto : productList) {
-            Optional<Product> optionalProduct = productService.findById(productCalculationDto.getId());
+            Optional<Product> optionalProduct = productService.findByIdWithProductShops(productCalculationDto.getId());
             if (optionalProduct.isPresent()) {
                 Product product = optionalProduct.get();
                 log.info("processing {}", product.getName());
