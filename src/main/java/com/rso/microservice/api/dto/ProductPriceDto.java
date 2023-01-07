@@ -19,6 +19,18 @@ public class ProductPriceDto {
     @JsonProperty("message")
     private String message;
 
+
+    public ProductPriceDto() {
+    }
+
+    public ProductPriceDto(Double priceEUR, Long id, String name, Integer quantity, String message) {
+        this.priceEUR = priceEUR;
+        this.id = id;
+        this.name = name;
+        this.quantity = quantity;
+        this.message = message;
+    }
+
     public Double getPriceEUR() {
         return priceEUR;
     }
