@@ -9,14 +9,13 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-	private ProductRepository productRepository;
+	private final ProductRepository productRepository;
 
 	public ProductService(ProductRepository productRepository) {
 		this.productRepository = productRepository;
 	}
 
-
-	public Optional<Product> findById(Long id) {
-		return productRepository.findById(id);
+	Optional<Product> findByIdWithProductShops(Long id) {
+		return productRepository.findByIdWithProductShops(id);
 	}
 }

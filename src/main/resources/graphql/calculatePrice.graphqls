@@ -19,7 +19,7 @@ type ResponseShopPrice {
     idShop: Int
     shopName: String
     priceTotalEUR: Float
-    productPriceGraphQLS: [ProductPrice]
+    productPrices: [ProductPrice]
 }
 
 type ResponseCalculatePrice {
