@@ -1,8 +1,11 @@
 package com.rso.microservice.service;
 
 
-import com.rso.microservice.api.dto.*;
-import com.rso.microservice.entity.*;
+import com.rso.microservice.api.dto.ProductCalculationDto;
+import com.rso.microservice.api.dto.ProductPriceDto;
+import com.rso.microservice.api.dto.ShopPriceDto;
+import com.rso.microservice.entity.Product;
+import com.rso.microservice.entity.ProductShop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -10,9 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PriceCalculationService {
+    private static final Logger log = LoggerFactory.getLogger(PriceCalculationService.class);
 
     final ProductService productService;
 
@@ -32,13 +37,14 @@ public class PriceCalculationService {
             Optional<Product> optionalProduct = productService.findById(productCalculationDto.getId());
             if (optionalProduct.isPresent()) {
                 Product product = optionalProduct.get();
+                log.info("processing {}", product.getName());
 
                 // filter to only the selected shop
                 if (idShop != null) {
                     List<ProductShop> productShops =
                             product.getShopProducts().stream()
                                     .filter(ps -> ps.getShop().getId().equals(idShop))
-                                    .toList();
+                                    .collect(Collectors.toList());
                     product.setShopProducts(productShops);
                 }
 
