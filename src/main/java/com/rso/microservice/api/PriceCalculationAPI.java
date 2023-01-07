@@ -52,11 +52,13 @@ public class PriceCalculationAPI {
                     content = @Content(schema = @Schema(implementation = ErrorDto.class)))
     })
     public ResponseEntity<PriceCalculationResponseDto> calculatePrice(
-            @Valid @RequestBody CalculatePriceRequestDto favoriteProductRequest) {
+            @Valid @RequestBody CalculatePriceRequestDto calculatePriceRequest) {
         log.info("fetchProductPrices ENTRY");
-        PriceCalculationResponseDto priceCalculationResponseDto = priceCalculationService.calculatePrice(favoriteProductRequest);
+        PriceCalculationResponseDto priceCalculationResponse = new PriceCalculationResponseDto();
+        priceCalculationResponse.setShopPrices(
+                priceCalculationService.calculatePriceAllShops(calculatePriceRequest.getProductList()));
         log.info("fetchProductPrices EXIT");
-        return ResponseEntity.status(HttpStatus.OK).body(priceCalculationResponseDto);
+        return ResponseEntity.status(HttpStatus.OK).body(priceCalculationResponse);
     }
 
     @PostMapping(value = "/calculate/shop", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -71,9 +73,13 @@ public class PriceCalculationAPI {
                     content = @Content(schema = @Schema(implementation = ErrorDto.class)))
     })
     public ResponseEntity<ShopPriceDto> calculatePriceSpecificShop(
-            @Valid @RequestBody CalculatePriceSpecificShopRequestDto favoriteProductRequest) {
-        // todo: add code here
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+            @Valid @RequestBody CalculatePriceSpecificShopRequestDto calculatePriceSpecificShopRequest) {
+        log.info("fetchProductPrices ENTRY");
+        Long idShop = Long.parseLong(calculatePriceSpecificShopRequest.getIdShop());
+        ShopPriceDto shopPrice = priceCalculationService.calculatePriceShop(idShop,
+                calculatePriceSpecificShopRequest.getProductList()).get(0);
+        log.info("fetchProductPrices EXIT");
+        return ResponseEntity.status(HttpStatus.OK).body(shopPrice);
     }
 
 }
