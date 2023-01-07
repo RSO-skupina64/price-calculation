@@ -1,0 +1,31 @@
+input ProductToCalculate {
+    id: Int!
+    quantity: Int!
+}
+
+input CalculatePriceInput {
+    productList: [ProductToCalculate]!
+}
+
+type ProductPrice {
+    priceEUR: Float
+    id: Int
+    name: String
+    quantity: Int
+    message: String
+}
+
+type ResponseShopPrice {
+    idShop: Int
+    shopName: String
+    priceTotalEUR: Float
+    productPriceGraphQLS: [ProductPrice]
+}
+
+type ResponseCalculatePrice {
+    shopPrices: [ResponseShopPrice]
+}
+
+type Query {
+    calculatePrice(input: CalculatePriceInput): ResponseCalculatePrice
+}
