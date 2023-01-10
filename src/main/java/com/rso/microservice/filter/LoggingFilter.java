@@ -29,7 +29,7 @@ public class LoggingFilter implements Filter {
 		if (requestId == null || requestId.isBlank())
 			requestId = UUID.randomUUID().toString();
 
-		MDCUtil.put(MDCUtil.MDCUtilKey.MICROSERVICE_NAME, "Administration");
+		MDCUtil.put(MDCUtil.MDCUtilKey.MICROSERVICE_NAME, "Price-Calculation");
 		MDCUtil.put(MDCUtil.MDCUtilKey.REQUEST_ID, requestId);
 		MDCUtil.put(MDCUtil.MDCUtilKey.MICROSERVICE_VERSION, buildProperties.getVersion());
 		filterChain.doFilter(servletRequest, servletResponse);
