@@ -13,7 +13,7 @@ spec:
         app: price-calculation
     spec:
       containers:
-        - image: as9721/price-calculation:2022-11-16-20-53-18
+        - image: as9721/price-calculation:2023-01-10-02-17-46
           name: price-calculation
           ports:
             - containerPort: 8080
@@ -26,6 +26,22 @@ spec:
               value: adminRso
             - name: spring.datasource.password
               value: Rso2022@
+            - name: LOGBACK_DESTINATION
+              value: aab8af63-1013-422f-8043-7012c08ace36-ls.logit.io:27798
+            - name: CONFIG_SERVER_URL
+              value: http://20.4.194.189:8888
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: server
+            initialDelaySeconds: 20
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: server
+            initialDelaySeconds: 20
+            periodSeconds: 3
 
 ---
 
@@ -36,7 +52,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - port: 8082
+    - port: 8080
       protocol: TCP
       targetPort: server
   selector:

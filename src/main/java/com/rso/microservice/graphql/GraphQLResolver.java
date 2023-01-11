@@ -1,36 +1,35 @@
 package com.rso.microservice.graphql;
 
+import com.rso.microservice.graphql.mapper.GraphQLResolverMapper;
+import com.rso.microservice.service.PriceCalculationService;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class GraphQLResolver implements GraphQLQueryResolver {
     private static final Logger log = LoggerFactory.getLogger(GraphQLResolver.class);
 
+    final PriceCalculationService priceCalculationService;
+
+    final GraphQLResolverMapper graphQLResolverMapper;
+
+    @Autowired
+
+    public GraphQLResolver(PriceCalculationService priceCalculationService, GraphQLResolverMapper graphQLResolverMapper) {
+        this.priceCalculationService = priceCalculationService;
+        this.graphQLResolverMapper = graphQLResolverMapper;
+    }
+
     public ResponseCalculatePrice calculatePrice(CalculatePriceInput input) {
-        //todo: replace with actual price calculation
         log.info("calculate price with graphql");
-        log.info("id[0]: {}", input.getProductList().get(0).getQuantity());
 
         ResponseCalculatePrice response = new ResponseCalculatePrice();
-
-        ResponseShopPrice price = new ResponseShopPrice();
-        price.setIdShop(1);
-        price.setPriceTotalEUR(12.0);
-
-        ResponseShopPrice price2 = new ResponseShopPrice();
-        price2.setIdShop(2);
-        price2.setPriceTotalEUR(36.0);
-
-        List<ResponseShopPrice> list = List.of(
-                 price, price2
-        );
-
-        response.setShopPrices(list);
+        response.setShopPrices(graphQLResolverMapper.toModelResponseShopPrice(
+                priceCalculationService.calculatePriceAllShops(
+                        graphQLResolverMapper.toModelProductCalculationDto(input.getProductList()))));
 
         return response;
     }
