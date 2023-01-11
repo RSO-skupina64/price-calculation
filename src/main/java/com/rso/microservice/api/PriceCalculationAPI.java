@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/price")
@@ -76,8 +77,12 @@ public class PriceCalculationAPI {
             @Valid @RequestBody CalculatePriceSpecificShopRequestDto calculatePriceSpecificShopRequest) {
         log.info("fetchProductPrices ENTRY");
         Long idShop = Long.parseLong(calculatePriceSpecificShopRequest.getIdShop());
-        ShopPriceDto shopPrice = priceCalculationService.calculatePriceShop(idShop,
-                calculatePriceSpecificShopRequest.getProductList()).get(0);
+        ShopPriceDto shopPrice = new ShopPriceDto();
+        List<ShopPriceDto> shopPriceList = priceCalculationService.calculatePriceShop(idShop,
+                calculatePriceSpecificShopRequest.getProductList());
+        if (shopPriceList != null && shopPriceList.size() > 0) {
+            shopPrice = shopPriceList.get(0);
+        }
         log.info("fetchProductPrices EXIT");
         return ResponseEntity.status(HttpStatus.OK).body(shopPrice);
     }
